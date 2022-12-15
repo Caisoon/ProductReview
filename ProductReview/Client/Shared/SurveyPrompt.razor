@@ -1,0 +1,16 @@
+﻿<div class="alert alert-secondary mt-4" role="alert">
+    <span class="" aria-hidden="true"></span>
+    <strong>@Title</strong>
+
+    <NavLink class="text-nowrap">
+        
+        <a class="font-weight-bold" href="/Genre">Click here</a>
+    </NavLink>
+    to start navigating through our website
+</div>
+
+@code {
+    // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    public string Title { get; set; }
+}
