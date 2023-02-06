@@ -11,11 +11,15 @@
                 <span class="oi oi-person" aria-hidden="true"></span> @context.User.Identity.Name!
             </NavLink>
         </li>
-        @*<li class="nav-item px-3">
-            <NavLink class="nav-link" href="authentication/logout" Match="NavLinkMatch.All">
+        <li class="nav-item px-3">
+            @*<NavLink class="nav-link" href="authentication/logout" Match="NavLinkMatch.All">
                 <span class="oi oi-account-logout" aria-hidden="true"></span> Log out
             </NavLink>
         </li>*@
+            <NavLink class="nav-link" href="#" @onclick="BeginSignOut" Match="NavLinkMatch.All">
+                <span class="oi oi-account-logout" aria-hidden="true"></span> Log out
+            </NavLink>
+        </li>
     </Authorized>
     <NotAuthorized>
         <li class="nav-item px-3">

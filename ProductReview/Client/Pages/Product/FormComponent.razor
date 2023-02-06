@@ -1,0 +1,58 @@
+﻿@inject HttpClient _client
+<EditForm Model="@product" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>Name: </label>
+            <div>
+                <InputText @bind-Value="product.Name" class="form-control" />
+                <ValidationMessage For="@(() => product.Name)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Product: </label>
+            <div>
+                <InputSelect @bind-Value="product.GenreId" class="form-control">
+                    <option value="">-- Select ProductType --</option>
+                    @if (Genres != null)
+                    {
+                        foreach (var genre in Genres)
+                        {
+                            <option value="@genre.Id">@genre.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => product.GenreId)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>ProductPrice: </label>
+            <div>
+                <InputNumber @bind-Value="product.ProductPrice" class="form-control" />
+                <ValidationMessage For="@(() => product.ProductPrice)" />
+            </div>
+        </div>
+    </fieldset>
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+        <BackToList Target="products" />
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public Product product { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Genre> Genres;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Genres = await _client.GetFromJsonAsync<List<Genre>>($"{Endpoints.GenresEndpoint}");
+    }
+}

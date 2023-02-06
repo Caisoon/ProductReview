@@ -1,0 +1,13 @@
+﻿@page "/producttype/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+<h3>View</h3>
+<FormComponent genre="genre" Disabled="true" />
+@code {
+    [Parameter] public int id { get; set; }
+    Genre genre = new Genre();
+    protected async override Task OnParametersSetAsync()
+    {
+        genre = await _client.GetFromJsonAsync<Genre>($"{Endpoints.GenresEndpoint}/{id}");
+    }
+}

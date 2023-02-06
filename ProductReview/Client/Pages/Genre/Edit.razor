@@ -1,0 +1,22 @@
+﻿@page "/producttype/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit ProductType</h3>
+
+<FormComponent ButtonText="Update" OnValidSubmit="EditGenre" genre="genre" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Genre genre = new Genre();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        genre = await _client.GetFromJsonAsync<Genre>($"{Endpoints.GenresEndpoint}/{id}");
+    }
+    async Task EditGenre()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.GenresEndpoint}/{id}", genre);
+        _navManager.NavigateTo("/producttype/");
+    }
+}

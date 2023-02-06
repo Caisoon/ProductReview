@@ -8,7 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProductReview.Server.Data;
+using ProductReview.Server.IRepository;
 using ProductReview.Server.Models;
+using ProductReview.Server.Repository;
 using System.Linq;
 
 namespace ProductReview.Server
@@ -40,6 +42,8 @@ namespace ProductReview.Server
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
