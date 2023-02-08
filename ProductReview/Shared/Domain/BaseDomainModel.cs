@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProductReview.Shared.Domain
 {
-    public class BaseDomainModel
+    public abstract class BaseDomainModel
     {
         public int Id { get; set; }
         public DateTime DateUploaded { get; set; }

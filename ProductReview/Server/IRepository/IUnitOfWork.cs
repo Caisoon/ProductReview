@@ -12,5 +12,9 @@ namespace ProductReview.Server.IRepository
         Task Save(HttpContext httpContext);
         IGenericRepository<Genre> Genres { get; }
         IGenericRepository<Product> Products { get; }
+        IGenericRepository<Review> Reviews { get; }
+        IGenericRepository<Comment> Comments { get; }
+
     }
+
 }

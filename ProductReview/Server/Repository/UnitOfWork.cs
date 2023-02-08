@@ -18,8 +18,11 @@ namespace ProductReview.Server.Repository
         private readonly ApplicationDbContext _context;
         private IGenericRepository<Genre> _genres;
         private IGenericRepository<Product> _products;
+        private IGenericRepository<Review> _reviews;
+        private IGenericRepository<Comment> _comments;
 
         private UserManager<ApplicationUser> _userManager;
+
 
         public UnitOfWork(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -31,6 +34,10 @@ namespace ProductReview.Server.Repository
             => _genres ??= new GenericRepository<Genre>(_context);
         public IGenericRepository<Product> Products
             => _products ??= new GenericRepository<Product>(_context);
+        public IGenericRepository<Review> Reviews
+            => _reviews ??= new GenericRepository<Review>(_context);
+        public IGenericRepository<Comment> Comments
+            => _comments ??= new GenericRepository<Comment>(_context);
 
 
         public void Dispose()

@@ -11,5 +11,7 @@ namespace ProductReview.Client.Static
 
         public static readonly string GenresEndpoint = $"{Prefix}/genres";
         public static readonly string ProductsEndpoint = $"{Prefix}/products";
+        public static readonly string ReviewsEndpoint = $"{Prefix}/reviews";
+        public static readonly string CommentsEndpoint = $"{Prefix}/comments";
     }
 }
