@@ -31,8 +31,8 @@ namespace ProductReview.Server.Controllers
         public async Task<IActionResult> GetReviews()
         {
             //return await _context.Reviews.ToListAsync();
-            var Reviews = await _unitOfWork.Reviews.GetAll();
-            return Ok(Reviews);
+            var reviews = await _unitOfWork.Reviews.GetAll(includes: q => q.Include(x =>x.Product).Include(x => x.Customer));
+            return Ok(reviews);
         }
 
         // GET: api/Reviews/5

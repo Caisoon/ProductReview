@@ -48,32 +48,28 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        <li class="nav-item px-3"></li>
-        <NavLink class="nav-link" href="/review" @onclick="()=>expandSubMenu=false">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Review
-        </NavLink>
-        <li class="nav-item px-3"></li>
-        <NavLink class="nav-link" href="/comment" @onclick="()=>expandSubMenu=false">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Comment
-        </NavLink>
-
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/producttype" @onclick="()=>expandSubMenu=true">
+            <NavLink class="nav-link" href="/producttype" @onclick="()=>expandSubMenu=false">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Product Type
             </NavLink>
-            @*@if (expandSubMenu)
-            {
-                <NavLink class="navbar-expand-md" href="/blah">
-                    <span class="oi oi-intermediate-state-2" aria-hidden="true"></span> Cate
-                </NavLink>
-                <NavLink class="navbar-expand-md" href="/blahblah">
-                    <span class="oi oi-intermediate-state-2" aria-hidden="true"></span> Gory
-                </NavLink>
-            }*@
         </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/products" Match="NavLinkMatch.All" @onclick="() => expandSubMenu=false">
-                <span class="oi oi-home" aria-hidden="true"></span> Products
+            <NavLink class="nav-link" href="/products" Match="NavLinkMatch.All" @onclick="() => expandSubMenu=true">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Products
+            </NavLink>
+            @if (expandSubMenu)
+        {
+            <NavLink class="navbar-expand-md" href="/reviews">
+                <span class="oi oi-intermediate-state-2" aria-hidden="true"></span> Reviews
+            </NavLink>
+            <NavLink class="navbar-expand-md" href="/comments">
+                <span class="oi oi-intermediate-state-2" aria-hidden="true"></span> Comments
+            </NavLink>
+        }
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/customers" @onclick="()=>expandSubMenu=true">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Customer
             </NavLink>
         </li>
     </ul>

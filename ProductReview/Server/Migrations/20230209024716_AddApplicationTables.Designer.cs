@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductReview.Server.Data;
 
-namespace ProductReview.Server.Data.Migrations
+namespace ProductReview.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230208133541_AddApplicationTables")]
+    [Migration("20230209024716_AddApplicationTables")]
     partial class AddApplicationTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -337,8 +337,14 @@ namespace ProductReview.Server.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
@@ -349,12 +355,38 @@ namespace ProductReview.Server.Data.Migrations
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserID")
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("ProductReview.Shared.Domain.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUploaded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("ProductReview.Shared.Domain.Genre", b =>
@@ -389,8 +421,8 @@ namespace ProductReview.Server.Data.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            DateUpdated = new DateTime(2023, 2, 8, 21, 35, 41, 112, DateTimeKind.Local).AddTicks(3796),
-                            DateUploaded = new DateTime(2023, 2, 8, 21, 35, 41, 111, DateTimeKind.Local).AddTicks(7345),
+                            DateUpdated = new DateTime(2023, 2, 9, 10, 47, 16, 489, DateTimeKind.Local).AddTicks(9833),
+                            DateUploaded = new DateTime(2023, 2, 9, 10, 47, 16, 488, DateTimeKind.Local).AddTicks(1320),
                             Name = "Fantasy",
                             UpdatedBy = "System"
                         },
@@ -398,8 +430,8 @@ namespace ProductReview.Server.Data.Migrations
                         {
                             Id = 2,
                             CreatedBy = "System",
-                            DateUpdated = new DateTime(2023, 2, 8, 21, 35, 41, 112, DateTimeKind.Local).AddTicks(4333),
-                            DateUploaded = new DateTime(2023, 2, 8, 21, 35, 41, 112, DateTimeKind.Local).AddTicks(4330),
+                            DateUpdated = new DateTime(2023, 2, 9, 10, 47, 16, 490, DateTimeKind.Local).AddTicks(486),
+                            DateUploaded = new DateTime(2023, 2, 9, 10, 47, 16, 490, DateTimeKind.Local).AddTicks(480),
                             Name = "DarkFantasy",
                             UpdatedBy = "System"
                         });
@@ -449,8 +481,14 @@ namespace ProductReview.Server.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateUpdated")
                         .HasColumnType("datetime2");
@@ -458,16 +496,17 @@ namespace ProductReview.Server.Data.Migrations
                     b.Property<DateTime>("DateUploaded")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ProductID")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Reviews");
                 });
@@ -523,6 +562,17 @@ namespace ProductReview.Server.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProductReview.Shared.Domain.Comment", b =>
+                {
+                    b.HasOne("ProductReview.Shared.Domain.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("ProductReview.Shared.Domain.Product", b =>
                 {
                     b.HasOne("ProductReview.Shared.Domain.Genre", "Genre")
@@ -532,6 +582,25 @@ namespace ProductReview.Server.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("ProductReview.Shared.Domain.Review", b =>
+                {
+                    b.HasOne("ProductReview.Shared.Domain.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProductReview.Shared.Domain.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }

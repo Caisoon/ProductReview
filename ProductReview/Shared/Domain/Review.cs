@@ -9,16 +9,14 @@ namespace ProductReview.Shared.Domain
 {
     public class Review : BaseDomainModel
     {
-
-        public string Name { get; set; }
-
-        public string Body { get; set; }
-
-        
-
-        public string ProductID { get; set; }
+        [Required]
+        public int ProductId { get; set; }
         public virtual Product Product { get; set; }
-
-        
+        [Required]
+        public int CustomerId { get; set; }
+        public virtual Customer Customer { get; set; }
+        [Required]
+        [MaxLength(100, ErrorMessage = "maximum {1} characters allowed")]
+        public string Body { get; set; }
     }
 }

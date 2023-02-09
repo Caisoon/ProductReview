@@ -1,0 +1,24 @@
+﻿@page "/comments/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3 class="card-title">Create Comments</h3>
+<hr />
+<br />
+<FormComponent ButtonText="Create Comment" comment="comment" OnValidSubmit="@CreateComment" />
+
+@code {
+    Comment comment = new Comment();
+
+    private IList<Customer> Customers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Customers = await _client.GetFromJsonAsync<List<Customer>>($"{Endpoints.CustomersEndpoint}");
+    }
+    private async Task CreateComment()
+    {
+        await _client.PostAsJsonAsync(Endpoints.CommentsEndpoint, comment);
+        _navManager.NavigateTo("/comments/");
+    }
+}

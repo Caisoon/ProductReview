@@ -1,8 +1,8 @@
-﻿@page "/review/view/{id:int}"
+﻿@page "/reviews/view/{id:int}"
 @inject HttpClient _client
 @inject NavigationManager _navManager
 <h3>View</h3>
-<FormComponent  Disabled="true" />
+<FormComponent review="review" Disabled="true" />
 @code {
     [Parameter] public int id { get; set; }
     Review review = new Review();
@@ -10,5 +10,4 @@
     {
         review = await _client.GetFromJsonAsync<Review>($"{Endpoints.ReviewsEndpoint}/{id}");
     }
-
 }

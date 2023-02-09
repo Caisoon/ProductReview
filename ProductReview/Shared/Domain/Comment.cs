@@ -9,9 +9,11 @@ namespace ProductReview.Shared.Domain
 {
     public class Comment : BaseDomainModel
     {
-        
-        public string Name { get; set; }
-
+        [Required]
+        public int? CustomerId { get; set; }
+        public virtual Customer Customer { get; set; }
+        [Required]
+        [MaxLength(100, ErrorMessage = "maximum {1} characters allowed")]
         public string Body { get; set; }
     }
 }

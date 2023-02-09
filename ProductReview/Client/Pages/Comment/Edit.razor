@@ -1,8 +1,8 @@
-﻿@page "/comment/edit/{id:int}"
+﻿@page "/comments/edit/{id:int}"
 @inject HttpClient _client
 @inject NavigationManager _navManager
 
-<h3>Edit ProductType</h3>
+<h3>Edit Comment</h3>
 
 <FormComponent ButtonText="Update" OnValidSubmit="EditComment" comment="comment" />
 
@@ -17,6 +17,6 @@
     async Task EditComment()
     {
         await _client.PutAsJsonAsync($"{Endpoints.CommentsEndpoint}/{id}", comment);
-        _navManager.NavigateTo("/comment/");
+        _navManager.NavigateTo("/comments/");
     }
 }

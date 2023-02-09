@@ -1,0 +1,69 @@
+﻿@inject HttpClient _client
+<EditForm Model="@review" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>User: </label>
+            <div>
+                <InputSelect @bind-Value="review.CustomerId" class="form-control">
+                    <option value="">-- Select User --</option>
+                    @if (Customers != null)
+                    {
+                        foreach (var customer in Customers)
+                        {
+                            <option value="@customer.Id">@customer.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => review.CustomerId)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Product: </label>
+            <div>
+                <InputSelect @bind-Value="review.ProductId" class="form-control">
+                    <option value="">-- Select Product --</option>
+                    @if (Products != null)
+                    {
+                        foreach (var product in Products)
+                        {
+                            <option value="@product.Id">@product.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => review.ProductId)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Review: </label>
+            <div>
+                <InputText @bind-Value="review.Body" class="form-control" />
+                <ValidationMessage For="@(() => review.Body)" />
+            </div>
+        </div>
+    </fieldset>
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+        <BackToList Target="reviews" />
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public Review review { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Product> Products;
+    private IList<Customer> Customers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Customers = await _client.GetFromJsonAsync<List<Customer>>($"{Endpoints.CustomersEndpoint}");
+        Products = await _client.GetFromJsonAsync<List<Product>>($"{Endpoints.ProductsEndpoint}");
+    }
+}

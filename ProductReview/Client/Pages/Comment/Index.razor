@@ -1,16 +1,16 @@
-﻿@page "/comment/"
+﻿@page "/comments/"
 @inject HttpClient _client
 @inject IJSRuntime js
 @inject HttpInterceptorService _interceptor
 @implements IDisposable
 @attribute [Authorize]
 
-<h3 class="card-title">Product Types</h3>
+<h3 class="card-title">Comments</h3>
 <br />
 
-<a href="/producttype/create" class="btn btn-secondary">
+<a href="/comments/create" class="btn btn-secondary">
     <span class="oi oi-plus"></span>
-    Create New Comment
+    Create New Comments
 </a>
 <br />
 <br />
@@ -24,8 +24,8 @@ else
     <table class="table table-responsive">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Body</th>
+                <th>Customer</th>
+                <th>Comment</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -33,12 +33,13 @@ else
             @foreach (var comment in Comments)
             {
                 <tr>
-                    <td>@comment.Name</td>
+                    <td>@comment.Customer.Name</td>
+                    <td>@comment.Body</td>
                     <td>
-                        <a href="/producttype/view/@comment.Id" class="btn btn-primary">
+                        <a href="/comments/view/@comment.Id" class="btn btn-primary">
                             <span class="oi oi-book"></span>
                         </a>
-                        <a href="/producttype/edit/@comment.Id" class="btn btn-warning">
+                        <a href="/comments/edit/@comment.Id" class="btn btn-warning">
                             <span class="oi oi-pencil"></span>
                         </a>
                         <button class="btn btn-danger" @onclick="@(()=>Delete(comment.Id))">
@@ -64,7 +65,7 @@ else
     async Task Delete(int commentId)
     {
         var comment = Comments.First(q => q.Id == commentId);
-        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {comment.Name}?");
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {comment.Customer.Name}'s comment?");
         if (confirm)
         {
             await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{commentId}");

@@ -1,22 +1,19 @@
-﻿@page "/review/"
+﻿@page "/reviews/"
+@inject HttpClient _client
 @inject IJSRuntime js
 @inject HttpInterceptorService _interceptor
+@implements IDisposable
 @attribute [Authorize]
-@inject HttpClient _client
-
-
 
 <h3 class="card-title">Reviews</h3>
 <br />
 
 <a href="/reviews/create" class="btn btn-secondary">
     <span class="oi oi-plus"></span>
-    Create New Review
+    Create New Reviews
 </a>
 <br />
 <br />
-
-
 
 @if (Reviews == null)
 {
@@ -27,9 +24,9 @@ else
     <table class="table table-responsive">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Product</th>
+                <th>User</th>
                 <th>Review</th>
-
                 <th>Actions</th>
             </tr>
         </thead>
@@ -37,14 +34,14 @@ else
             @foreach (var review in Reviews)
             {
                 <tr>
-                    <td>@review.Name</td>
+                    <td>@review.Product.Name</td>
+                    <td>@review.Customer.Name</td>
                     <td>@review.Body</td>
-
                     <td>
-                        <a href="/products/view/@review.Id" class="btn btn-primary">
+                        <a href="/reviews/view/@review.Id" class="btn btn-primary">
                             <span class="oi oi-book"></span>
                         </a>
-                        <a href="/products/edit/@review.Id" class="btn btn-warning">
+                        <a href="/reviews/edit/@review.Id" class="btn btn-warning">
                             <span class="oi oi-pencil"></span>
                         </a>
                         <button class="btn btn-danger" @onclick="@(()=>Delete(review.Id))">
@@ -56,29 +53,29 @@ else
         </tbody>
     </table>
 }
+<br />
 
 @code {
     private List<Review> Reviews;
 
     protected async override Task OnInitializedAsync()
     {
-        //_interceptor.MonitorEvent();
+        _interceptor.MonitorEvent();
         Reviews = await _client.GetFromJsonAsync<List<Review>>($"{Endpoints.ReviewsEndpoint}");
     }
 
     async Task Delete(int reviewId)
     {
         var review = Reviews.First(q => q.Id == reviewId);
-        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {review.Name}?");
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete a review made by{review.Customer.Name}?");
         if (confirm)
         {
             await _client.DeleteAsync($"{Endpoints.ReviewsEndpoint}/{reviewId}");
             await OnInitializedAsync();
         }
     }
-    //public void Dispose()
-    //{
-    //_interceptor.DisposeEvent();
-    //}
-
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
 }

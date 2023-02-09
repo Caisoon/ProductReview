@@ -1,0 +1,51 @@
+﻿@inject HttpClient _client
+<EditForm Model="@comment" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <fieldset disabled="@Disabled">
+        <div class="form-group">
+            <label>User: </label>
+            <div>
+                <InputSelect @bind-Value="comment.CustomerId" class="form-control">
+                    <option value="">-- Select User --</option>
+                    @if (Customers != null)
+                    {
+                        foreach (var customer in Customers)
+                        {
+                            <option value="@customer.Id">@customer.Name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => comment.CustomerId)" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Comment: </label>
+            <div>
+                <InputText @bind-Value="comment.Body" class="form-control" />
+                <ValidationMessage For="@(() => comment.Body)" />
+            </div>
+        </div>
+    </fieldset>
+    @if (!Disabled)
+    {
+        <button type="submit" class="btn btn-success btn-block">
+            @ButtonText
+        </button>
+    }
+        <BackToList Target="comments" />
+</EditForm>
+
+@code {
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public Comment comment { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private IList<Customer> Customers;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Customers = await _client.GetFromJsonAsync<List<Customer>>($"{Endpoints.CustomersEndpoint}");
+    }
+}

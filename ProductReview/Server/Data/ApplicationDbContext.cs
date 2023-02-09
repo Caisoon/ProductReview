@@ -22,15 +22,16 @@ namespace ProductReview.Server.Data
         }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Shared.Domain.Comment> Comments { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
-        public DbSet<Shared.Domain.Review> Reviews { get; set; }
-        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.ApplyConfiguration(new GenreSeedConfiguration());
+            builder.ApplyConfiguration(new CustomerSeedConfiguration());
         }
     }
 }

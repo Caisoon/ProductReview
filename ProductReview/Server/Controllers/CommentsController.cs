@@ -9,7 +9,7 @@ using ProductReview.Server.Data;
 using ProductReview.Server.IRepository;
 using ProductReview.Shared.Domain;
 
-namespace ProductReview.Server.Controllers
+namespace CommentReview.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -31,8 +31,8 @@ namespace ProductReview.Server.Controllers
         public async Task<IActionResult> GetComments()
         {
             //return await _context.Comments.ToListAsync();
-            var Comments = await _unitOfWork.Comments.GetAll();
-            return Ok(Comments);
+            var comments = await _unitOfWork.Comments.GetAll(includes: q => q.Include(x => x.Customer));
+            return Ok(comments);
         }
 
         // GET: api/Comments/5
@@ -40,29 +40,29 @@ namespace ProductReview.Server.Controllers
         //public async Task<ActionResult<Comment>> GetComment(int id)
         public async Task<IActionResult> GetComment(int id)
         {
-            //var productComment = await _context.Comments.FindAsync(id);
-            var productComment = await _unitOfWork.Comments.Get(q => q.Id == id);
+            //var comment = await _context.Comments.FindAsync(id);
+            var comment = await _unitOfWork.Comments.Get(q => q.Id == id);
 
-            if (productComment == null)
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            return Ok(productComment);
+            return Ok(comment);
         }
 
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutComment(int id, Comment productComment)
+        public async Task<IActionResult> PutComment(int id, Comment comment)
         {
-            if (id != productComment.Id)
+            if (id != comment.Id)
             {
                 return BadRequest();
             }
 
-            //_context.Entry(productComment).State = EntityState.Modified;
-            _unitOfWork.Comments.Update(productComment);
+            //_context.Entry(comment).State = EntityState.Modified;
+            _unitOfWork.Comments.Update(comment);
 
             try
             {
@@ -88,28 +88,28 @@ namespace ProductReview.Server.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(Comment productComment)
+        public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
-            //_context.Comments.Add(productComment);
+            //_context.Comments.Add(comment);
             //await _context.SaveChangesAsync();
-            await _unitOfWork.Comments.Insert(productComment);
+            await _unitOfWork.Comments.Insert(comment);
             await _unitOfWork.Save(HttpContext);
 
-            return CreatedAtAction("GetComment", new { id = productComment.Id }, productComment);
+            return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
         }
 
         // DELETE: api/Comments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
-            //var productComment = await _context.Comments.FindAsync(id);
-            var productComment = await _unitOfWork.Comments.Get(q => q.Id == id);
-            if (productComment == null)
+            //var comment = await _context.Comments.FindAsync(id);
+            var comment = await _unitOfWork.Comments.Get(q => q.Id == id);
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            //_context.Comments.Remove(productComment);
+            //_context.Comments.Remove(comment);
             //await _context.SaveChangesAsync();
             await _unitOfWork.Comments.Delete(id);
             await _unitOfWork.Save(HttpContext);
@@ -121,8 +121,8 @@ namespace ProductReview.Server.Controllers
         private async Task<bool> CommentExists(int id)
         {
             //return _context.Comments.Any(e => e.Id == id);
-            var productComment = await _unitOfWork.Comments.Get(q => q.Id == id);
-            return productComment != null;
+            var comment = await _unitOfWork.Comments.Get(q => q.Id == id);
+            return comment != null;
         }
     }
 }
