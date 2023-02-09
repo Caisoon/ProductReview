@@ -1,0 +1,13 @@
+﻿@page "/comment/view/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+<h3>View</h3>
+<FormComponent comment="comment" Disabled="true" />
+@code {
+    [Parameter] public int id { get; set; }
+   Comment comment = new Comment();
+    protected async override Task OnParametersSetAsync()
+    {
+        comment = await _client.GetFromJsonAsync<Comment>($"{Endpoints.CommentsEndpoint}/{id}");
+    }
+}

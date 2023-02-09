@@ -1,0 +1,22 @@
+﻿@page "/comment/edit/{id:int}"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+
+<h3>Edit ProductType</h3>
+
+<FormComponent ButtonText="Update" OnValidSubmit="EditComment" comment="comment" />
+
+@code {
+    [Parameter] public int id { get; set; }
+    Comment comment = new Comment();
+
+    protected async override Task OnParametersSetAsync()
+    {
+        comment = await _client.GetFromJsonAsync<Comment>($"{Endpoints.CommentsEndpoint}/{id}");
+    }
+    async Task EditComment()
+    {
+        await _client.PutAsJsonAsync($"{Endpoints.CommentsEndpoint}/{id}", comment);
+        _navManager.NavigateTo("/comment/");
+    }
+}

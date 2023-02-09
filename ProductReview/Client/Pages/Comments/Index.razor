@@ -1,0 +1,78 @@
+﻿@page "/comment/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@inject HttpInterceptorService _interceptor
+@implements IDisposable
+@attribute [Authorize]
+
+<h3 class="card-title">Product Types</h3>
+<br />
+
+<a href="/producttype/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Comment
+</a>
+<br />
+<br />
+
+@if (Comments == null)
+{
+    <div class="alert alert-info">Loading Comments...</div>
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Body</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var comment in Comments)
+            {
+                <tr>
+                    <td>@comment.Name</td>
+                    <td>
+                        <a href="/producttype/view/@comment.Id" class="btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/producttype/edit/@comment.Id" class="btn btn-warning">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button class="btn btn-danger" @onclick="@(()=>Delete(comment.Id))">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<br />
+
+@code {
+    private List<Comment> Comments;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+        Comments = await _client.GetFromJsonAsync<List<Comment>>($"{Endpoints.CommentsEndpoint}");
+    }
+
+    async Task Delete(int commentId)
+    {
+        var comment = Comments.First(q => q.Id == commentId);
+        var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {comment.Name}?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"{Endpoints.CommentsEndpoint}/{commentId}");
+            await OnInitializedAsync();
+        }
+    }
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+}
